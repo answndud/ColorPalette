@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Palette Generator - 색상 팔레트 생성기</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Noto+Sans+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Dark Theme (Default) */
+        :root, [data-theme="dark"] {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a24;
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --text-primary: #e8e8e8;
+            --text-secondary: #8a8a9a;
+            --text-muted: #5a5a6a;
+            --border-color: #2a2a3a;
+            --gradient-accent: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --shadow-card: 0 10px 40px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Light Theme */
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --bg-card: #ffffff;
+            --accent-primary: #4f46e5;
+            --accent-secondary: #7c3aed;
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a5a;
+            --text-muted: #7a7a8a;
+            --border-color: #e0e0e0;
+            --gradient-accent: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            --shadow-card: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 10px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent-primary);
+            transform: scale(1.05);
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+        }
+
+        h1 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 400;
+            letter-spacing: 2px;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
+        /* Color Picker Section */
+        .picker-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .color-input-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .color-input-wrapper label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        input[type="color"] {
+            width: 120px;
+            height: 120px;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            background: none;
+            padding: 0;
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: 3px solid var(--border-color);
+            border-radius: 16px;
+        }
+
+        .hex-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hex-input {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            padding: 12px 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            width: 140px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .hex-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        /* Color Values Display */
+        .color-values {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 280px;
+        }
+
+        .color-value-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .color-value-label {
+            width: 50px;
+            color: var(--text-muted);
+        }
+
+        .color-value-text {
+            flex: 1;
+            padding: 8px 12px;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            color: var(--text-primary);
+        }
+
+        .copy-btn {
+            padding: 8px 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.8rem;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        .copy-btn.copied {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+
+        /* Palette Section */
+        .section-title {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin: 30px 0 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .palette-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .palette-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-card);
+        }
+
+        .palette-color {
+            height: 100px;
+            position: relative;
+        }
+
+        .palette-info {
+            padding: 12px;
+        }
+
+        .palette-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .palette-hex {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        /* Shades & Tints */
+        .shades-grid {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 30px;
+        }
+
+        .shade-item {
+            flex: 1;
+            height: 60px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            position: relative;
+        }
+
+        .shade-item:hover {
+            transform: scaleY(1.1);
+        }
+
+        .shade-item::after {
+            content: attr(data-hex);
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .shade-item:hover::after {
+            opacity: 1;
+        }
+
+        /* Contrast Checker */
+        .contrast-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .contrast-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .contrast-card {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .contrast-preview {
+            padding: 25px;
+            text-align: center;
+        }
+
+        .contrast-preview-large {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .contrast-preview-small {
+            font-size: 0.85rem;
+        }
+
+        .contrast-info {
+            padding: 15px;
+            background: var(--bg-secondary);
+        }
+
+        .contrast-ratio {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .contrast-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .contrast-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .contrast-badge.pass {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        .contrast-badge.fail {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        /* CSS Variables Output */
+        .css-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .css-output {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .css-output pre {
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        .css-keyword {
+            color: #c792ea;
+        }
+
+        .css-property {
+            color: #82aaff;
+        }
+
+        .css-value {
+            color: #c3e88d;
+        }
+
+        .copy-all-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 8px 16px;
+            background: var(--accent-primary);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-family: 'Noto Sans KR', sans-serif;
+            transition: all 0.2s ease;
+        }
+
+        .copy-all-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+
+            .theme-toggle {
+                padding: 8px 12px;
+            }
+
+            .theme-toggle span:last-child {
+                display: none;
+            }
+
+            .picker-section {
+                padding: 20px;
+            }
+
+            input[type="color"] {
+                width: 80px;
+                height: 80px;
+            }
+
+            .color-values {
+                min-width: 100%;
+            }
+
+            .shades-grid {
+                flex-wrap: wrap;
+            }
+
+            .shade-item {
+                min-width: calc(20% - 4px);
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .palette-card, .contrast-card {
+            animation: fadeIn 0.3s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" id="theme-toggle">
+        <span id="theme-icon">🌙</span>
+        <span id="theme-text">다크 모드</span>
+    </button>
+
+    <div class="container">
+        <header>
+            <h1>COLOR PALETTE</h1>
+            <p class="subtitle">색상 팔레트 생성기 · HEX/RGB/HSL 변환 · WCAG 접근성 체크</p>
+        </header>
+
+        <!-- Color Picker -->
+        <section class="picker-section">
+            <div class="color-input-wrapper">
+                <label>메인 컬러 선택</label>
+                <input type="color" id="color-picker" value="#6366f1">
+                <div class="hex-input-group">
+                    <span style="color: var(--text-muted)">#</span>
+                    <input type="text" class="hex-input" id="hex-input" value="6366F1" maxlength="6">
+                </div>
+            </div>
+
+            <div class="color-values">
+                <div class="color-value-row">
+                    <span class="color-value-label">HEX</span>
+                    <span class="color-value-text" id="hex-value">#6366F1</span>
+                    <button class="copy-btn" data-copy="hex">복사</button>
+                </div>
+                <div class="color-value-row">
+                    <span class="color-value-label">RGB</span>
+                    <span class="color-value-text" id="rgb-value">rgb(99, 102, 241)</span>
+                    <button class="copy-btn" data-copy="rgb">복사</button>
+                </div>
+                <div class="color-value-row">
+                    <span class="color-value-label">HSL</span>
+                    <span class="color-value-text" id="hsl-value">hsl(239, 84%, 67%)</span>
+                    <button class="copy-btn" data-copy="hsl">복사</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Shades & Tints -->
+        <div class="section-title">🎨 명도 변화 · Shades & Tints</div>
+        <div class="shades-grid" id="shades-grid"></div>
+
+        <!-- Color Harmonies -->
+        <div class="section-title">🌈 색상 조화 · Color Harmonies</div>
+        <div class="palette-grid" id="harmony-grid"></div>
+
+        <!-- Contrast Checker -->
+        <div class="section-title">♿ 접근성 대비율 · WCAG Contrast</div>
+        <section class="contrast-section">
+            <div class="contrast-grid" id="contrast-grid"></div>
+        </section>
+
+        <!-- CSS Variables -->
+        <div class="section-title">💻 CSS 변수 코드</div>
+        <section class="css-section">
+            <div class="css-output">
+                <button class="copy-all-btn" id="copy-css">전체 복사</button>
+                <pre id="css-code"></pre>
+            </div>
+        </section>
+
+        <footer>
+            <p>클릭하여 색상 복사 · 모든 처리는 브라우저에서 실행</p>
+        </footer>
+    </div>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const themeText = document.getElementById('theme-text');
+        const html = document.documentElement;
+
+        const savedTheme = localStorage.getItem('color-palette-theme') || 'dark';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeUI(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('color-palette-theme', newTheme);
+            updateThemeUI(newTheme);
+        });
+
+        function updateThemeUI(theme) {
+            themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
+            themeText.textContent = theme === 'dark' ? '다크 모드' : '라이트 모드';
+        }
+
+        // Color Utilities
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        function rgbToHex(r, g, b) {
+            return '#' + [r, g, b].map(x => {
+                const hex = Math.max(0, Math.min(255, Math.round(x))).toString(16);
+                return hex.length === 1 ? '0' + hex : hex;
+            }).join('').toUpperCase();
+        }
+
+        function rgbToHsl(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+
+            if (max === min) {
+                h = s = 0;
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+                    case g: h = ((b - r) / d + 2) / 6; break;
+                    case b: h = ((r - g) / d + 4) / 6; break;
+                }
+            }
+            return {
+                h: Math.round(h * 360),
+                s: Math.round(s * 100),
+                l: Math.round(l * 100)
+            };
+        }
+
+        function hslToRgb(h, s, l) {
+            h /= 360; s /= 100; l /= 100;
+            let r, g, b;
+
+            if (s === 0) {
+                r = g = b = l;
+            } else {
+                const hue2rgb = (p, q, t) => {
+                    if (t < 0) t += 1;
+                    if (t > 1) t -= 1;
+                    if (t < 1/6) return p + (q - p) * 6 * t;
+                    if (t < 1/2) return q;
+                    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                    return p;
+                };
+                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                const p = 2 * l - q;
+                r = hue2rgb(p, q, h + 1/3);
+                g = hue2rgb(p, q, h);
+                b = hue2rgb(p, q, h - 1/3);
+            }
+            return {
+                r: Math.round(r * 255),
+                g: Math.round(g * 255),
+                b: Math.round(b * 255)
+            };
+        }
+
+        // Contrast Ratio (WCAG)
+        function getLuminance(r, g, b) {
+            const [rs, gs, bs] = [r, g, b].map(c => {
+                c /= 255;
+                return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+            });
+            return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+        }
+
+        function getContrastRatio(hex1, hex2) {
+            const rgb1 = hexToRgb(hex1);
+            const rgb2 = hexToRgb(hex2);
+            const l1 = getLuminance(rgb1.r, rgb1.g, rgb1.b);
+            const l2 = getLuminance(rgb2.r, rgb2.g, rgb2.b);
+            const lighter = Math.max(l1, l2);
+            const darker = Math.min(l1, l2);
+            return (lighter + 0.05) / (darker + 0.05);
+        }
+
+        // Color Harmonies
+        function getComplementary(h) {
+            return (h + 180) % 360;
+        }
+
+        function getAnalogous(h) {
+            return [(h + 330) % 360, (h + 30) % 360];
+        }
+
+        function getTriadic(h) {
+            return [(h + 120) % 360, (h + 240) % 360];
+        }
+
+        function getSplitComplementary(h) {
+            return [(h + 150) % 360, (h + 210) % 360];
+        }
+
+        function getTetradic(h) {
+            return [(h + 90) % 360, (h + 180) % 360, (h + 270) % 360];
+        }
+
+        // Generate Shades and Tints
+        function generateShades(hex, count = 10) {
+            const rgb = hexToRgb(hex);
+            const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+            const shades = [];
+            
+            for (let i = 0; i < count; i++) {
+                const lightness = 95 - (i * (90 / (count - 1)));
+                const newRgb = hslToRgb(hsl.h, hsl.s, lightness);
+                shades.push(rgbToHex(newRgb.r, newRgb.g, newRgb.b));
+            }
+            return shades;
+        }
+
+        // Main Update Function
+        function updatePalette(hex) {
+            const rgb = hexToRgb(hex);
+            if (!rgb) return;
+
+            const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+
+            // Update color values
+            document.getElementById('hex-value').textContent = hex.toUpperCase();
+            document.getElementById('rgb-value').textContent = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+            document.getElementById('hsl-value').textContent = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+
+            // Generate shades
+            const shades = generateShades(hex);
+            const shadesGrid = document.getElementById('shades-grid');
+            shadesGrid.innerHTML = shades.map(shade => 
+                `<div class="shade-item" style="background: ${shade}" data-hex="${shade}" onclick="copyToClipboard('${shade}')"></div>`
+            ).join('');
+
+            // Generate harmonies
+            const harmonies = [
+                { label: '메인 컬러', hex: hex },
+                { label: '보색', hex: rgbToHex(...Object.values(hslToRgb(getComplementary(hsl.h), hsl.s, hsl.l))) },
+                { label: '유사색 1', hex: rgbToHex(...Object.values(hslToRgb(getAnalogous(hsl.h)[0], hsl.s, hsl.l))) },
+                { label: '유사색 2', hex: rgbToHex(...Object.values(hslToRgb(getAnalogous(hsl.h)[1], hsl.s, hsl.l))) },
+                { label: '삼색 조화 1', hex: rgbToHex(...Object.values(hslToRgb(getTriadic(hsl.h)[0], hsl.s, hsl.l))) },
+                { label: '삼색 조화 2', hex: rgbToHex(...Object.values(hslToRgb(getTriadic(hsl.h)[1], hsl.s, hsl.l))) },
+                { label: '분리보색 1', hex: rgbToHex(...Object.values(hslToRgb(getSplitComplementary(hsl.h)[0], hsl.s, hsl.l))) },
+                { label: '분리보색 2', hex: rgbToHex(...Object.values(hslToRgb(getSplitComplementary(hsl.h)[1], hsl.s, hsl.l))) },
+            ];
+
+            const harmonyGrid = document.getElementById('harmony-grid');
+            harmonyGrid.innerHTML = harmonies.map(h => `
+                <div class="palette-card" onclick="copyToClipboard('${h.hex}')">
+                    <div class="palette-color" style="background: ${h.hex}"></div>
+                    <div class="palette-info">
+                        <div class="palette-label">${h.label}</div>
+                        <div class="palette-hex">${h.hex}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Contrast checker
+            const contrastTests = [
+                { bg: hex, fg: '#FFFFFF', label: '흰색 텍스트' },
+                { bg: hex, fg: '#000000', label: '검정 텍스트' },
+                { bg: '#FFFFFF', fg: hex, label: '흰 배경' },
+                { bg: '#000000', fg: hex, label: '검정 배경' },
+            ];
+
+            const contrastGrid = document.getElementById('contrast-grid');
+            contrastGrid.innerHTML = contrastTests.map(test => {
+                const ratio = getContrastRatio(test.bg, test.fg);
+                const passAA = ratio >= 4.5;
+                const passAAA = ratio >= 7;
+                const passAALarge = ratio >= 3;
+                
+                return `
+                    <div class="contrast-card">
+                        <div class="contrast-preview" style="background: ${test.bg}; color: ${test.fg}">
+                            <div class="contrast-preview-large">Aa</div>
+                            <div class="contrast-preview-small">${test.label}</div>
+                        </div>
+                        <div class="contrast-info">
+                            <div class="contrast-ratio">${ratio.toFixed(2)}:1</div>
+                            <div class="contrast-badges">
+                                <span class="contrast-badge ${passAALarge ? 'pass' : 'fail'}">AA Large ${passAALarge ? '✓' : '✗'}</span>
+                                <span class="contrast-badge ${passAA ? 'pass' : 'fail'}">AA ${passAA ? '✓' : '✗'}</span>
+                                <span class="contrast-badge ${passAAA ? 'pass' : 'fail'}">AAA ${passAAA ? '✓' : '✗'}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // CSS Variables
+            const cssCode = `:root {
+  <span class="css-property">--color-primary</span>: <span class="css-value">${hex}</span>;
+  <span class="css-property">--color-primary-rgb</span>: <span class="css-value">${rgb.r}, ${rgb.g}, ${rgb.b}</span>;
+  <span class="css-property">--color-complementary</span>: <span class="css-value">${harmonies[1].hex}</span>;
+  <span class="css-property">--color-analogous-1</span>: <span class="css-value">${harmonies[2].hex}</span>;
+  <span class="css-property">--color-analogous-2</span>: <span class="css-value">${harmonies[3].hex}</span>;
+  <span class="css-property">--color-triadic-1</span>: <span class="css-value">${harmonies[4].hex}</span>;
+  <span class="css-property">--color-triadic-2</span>: <span class="css-value">${harmonies[5].hex}</span>;
+  <span class="css-property">--color-50</span>: <span class="css-value">${shades[0]}</span>;
+  <span class="css-property">--color-100</span>: <span class="css-value">${shades[1]}</span>;
+  <span class="css-property">--color-200</span>: <span class="css-value">${shades[2]}</span>;
+  <span class="css-property">--color-300</span>: <span class="css-value">${shades[3]}</span>;
+  <span class="css-property">--color-400</span>: <span class="css-value">${shades[4]}</span>;
+  <span class="css-property">--color-500</span>: <span class="css-value">${shades[5]}</span>;
+  <span class="css-property">--color-600</span>: <span class="css-value">${shades[6]}</span>;
+  <span class="css-property">--color-700</span>: <span class="css-value">${shades[7]}</span>;
+  <span class="css-property">--color-800</span>: <span class="css-value">${shades[8]}</span>;
+  <span class="css-property">--color-900</span>: <span class="css-value">${shades[9]}</span>;
+}`;
+            document.getElementById('css-code').innerHTML = cssCode;
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(`${text} 복사됨!`);
+            });
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--accent-primary);
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-size: 0.9rem;
+                z-index: 9999;
+                animation: fadeIn 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
+
+        // Event Listeners
+        const colorPicker = document.getElementById('color-picker');
+        const hexInput = document.getElementById('hex-input');
+
+        colorPicker.addEventListener('input', (e) => {
+            const hex = e.target.value;
+            hexInput.value = hex.substring(1).toUpperCase();
+            updatePalette(hex);
+        });
+
+        hexInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/[^0-9A-Fa-f]/g, '').substring(0, 6);
+            e.target.value = value.toUpperCase();
+            
+            if (value.length === 6) {
+                const hex = '#' + value;
+                colorPicker.value = hex;
+                updatePalette(hex);
+            }
+        });
+
+        // Copy buttons
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const type = this.dataset.copy;
+                const value = document.getElementById(`${type}-value`).textContent;
+                copyToClipboard(value);
+                
+                this.textContent = '완료!';
+                this.classList.add('copied');
+                setTimeout(() => {
+                    this.textContent = '복사';
+                    this.classList.remove('copied');
+                }, 1500);
+            });
+        });
+
+        // Copy all CSS
+        document.getElementById('copy-css').addEventListener('click', () => {
+            const cssText = document.getElementById('css-code').textContent;
+            copyToClipboard(cssText);
+        });
+
+        // Initialize
+        updatePalette('#6366F1');
+    </script>
+</body>
+</html>
+
