@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" data-theme="dark">
+<html lang="ko" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -60,7 +60,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: 
+            background:
                 radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
             pointer-events: none;
@@ -527,11 +527,186 @@
         .palette-card, .contrast-card {
             animation: fadeIn 0.3s ease forwards;
         }
+    
+
+        /* Minimal light interface override */
+        :root, [data-theme="light"] {
+            --bg-primary: #f7f8f8;
+            --bg-secondary: #f0f2f2;
+            --bg-tertiary: #e7ebeb;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --bg-input: #eef0f1;
+            --text-primary: #111416;
+            --text-secondary: #4f5b61;
+            --text-muted: #7b878c;
+            --accent: #0f766e;
+            --accent-primary: #0f766e;
+            --accent-secondary: #0f766e;
+            --accent-light: #0f766e;
+            --accent-glow: rgba(15, 118, 110, 0.08);
+            --success: #157f3b;
+            --warning: #9a6700;
+            --danger: #b42318;
+            --error: #b42318;
+            --border: #d9dedf;
+            --border-color: #d9dedf;
+            --border-hover: #b8c2c6;
+            --shadow: 0 1px 2px rgba(17, 20, 22, 0.06);
+            --shadow-card: 0 1px 2px rgba(17, 20, 22, 0.06);
+            --gradient-accent: none;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #101314;
+            --bg-secondary: #171b1d;
+            --bg-tertiary: #202628;
+            --bg-card: rgba(24, 28, 30, 0.92);
+            --bg-input: #202628;
+            --text-primary: #f2f4f4;
+            --text-secondary: #b4bdc1;
+            --text-muted: #7f8b91;
+            --accent: #72d6c9;
+            --accent-primary: #72d6c9;
+            --accent-secondary: #72d6c9;
+            --accent-light: #72d6c9;
+            --accent-glow: rgba(114, 214, 201, 0.08);
+            --success: #8bd39a;
+            --warning: #e0b85f;
+            --danger: #ffb4ab;
+            --error: #ffb4ab;
+            --border: #30383c;
+            --border-color: #30383c;
+            --border-hover: #465156;
+            --shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+            --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.28);
+            --gradient-accent: none;
+        }
+
+        body {
+            background: var(--bg-primary) !important;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        body::before, .logo-icon, .upload-icon, .drop-overlay-icon, .icon:empty, .card-header-icon, .result-icon {
+            display: none !important;
+        }
+
+        .container {
+            max-width: 1120px;
+            padding: 28px 18px;
+        }
+
+        header {
+            text-align: left;
+            margin-bottom: 22px;
+            padding-top: 0;
+        }
+
+        h1, .logo h1 {
+            color: var(--text-primary) !important;
+            background: none !important;
+            -webkit-text-fill-color: currentColor !important;
+            font-size: clamp(1.45rem, 3vw, 2.05rem) !important;
+            font-weight: 600 !important;
+            letter-spacing: 0 !important;
+            text-shadow: none !important;
+        }
+
+        .subtitle, .logo span {
+            color: var(--text-secondary) !important;
+            font-size: 0.86rem !important;
+            max-width: 620px;
+            margin-left: 0;
+        }
+
+        .theme-toggle, #theme-toggle, #themeToggle {
+            min-width: 64px;
+            min-height: 34px;
+            width: auto !important;
+            height: 34px !important;
+            border-radius: 8px !important;
+            padding: 0 10px !important;
+            background: var(--bg-card) !important;
+            border: 1px solid var(--border-color, var(--border)) !important;
+            color: var(--text-secondary) !important;
+            box-shadow: none !important;
+            transform: none !important;
+            font-size: 0.78rem !important;
+        }
+
+        .card, .panel, .section, .input-panel, .output-panel, .preview-panel,
+        .control-panel, .controls-panel, .options-panel, .settings-panel,
+        .editor-panel, .preview-section, .tool-panel, .qr-card,
+        .generator-card, .scanner-card, .info-section, .stats-panel,
+        .practice-area, .performance-chart, .tips-section, .stat-item,
+        .drop-zone, .upload-zone, .batch-item, .history-item {
+            background: var(--bg-card) !important;
+            border: 1px solid var(--border-color, var(--border)) !important;
+            border-radius: 10px !important;
+            box-shadow: 0 1px 2px rgba(17, 20, 22, 0.06) !important;
+        }
+
+        .card-header, .panel-header, .section-header, .preview-header {
+            padding: 13px 16px !important;
+            border-bottom: 1px solid var(--border-color, var(--border)) !important;
+        }
+
+        .card-body, .panel-body, .section-body, .controls-panel, .preview-section {
+            padding: 16px !important;
+        }
+
+        button, .btn, .button, .tab, .data-type, .preview-tab,
+        .share-btn, .reset-stats-btn, .retry-btn, .reserve-btn,
+        .download-btn, .action-btn, .copy-btn, .panel-btn {
+            border-radius: 8px !important;
+            box-shadow: none !important;
+            background-image: none !important;
+            transform: none !important;
+            transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease !important;
+        }
+
+        .btn-accent, .btn-primary, .btn-success,
+        .tab.active, .data-type.active, .preview-tab.active,
+        .reserve-btn:not(:disabled), .download-btn, .action-btn.primary {
+            background: var(--accent-primary, var(--accent)) !important;
+            border-color: var(--accent-primary, var(--accent)) !important;
+            color: #fff !important;
+        }
+
+        input, textarea, select, .editor, .preview, .output,
+        .input-area, .output-area, .format-select {
+            background: var(--bg-input, var(--bg-secondary)) !important;
+            color: var(--text-primary) !important;
+            border: 1px solid var(--border-color, var(--border)) !important;
+            border-radius: 8px !important;
+        }
+
+        input[type="range"] {
+            accent-color: var(--accent-primary, var(--accent));
+        }
+
+        .drop-zone, .upload-zone {
+            padding: 42px 22px !important;
+            border-style: dashed !important;
+        }
+
+        .section-title, .panel-title, .card-title, .controls-title, h2, h3 {
+            color: var(--text-primary) !important;
+            letter-spacing: 0 !important;
+        }
+
+        footer {
+            color: var(--text-muted) !important;
+            padding: 22px !important;
+            font-size: 0.78rem !important;
+        }
+
     </style>
 </head>
 <body>
     <button class="theme-toggle" id="theme-toggle">
-        <span id="theme-icon">🌙</span>
+        <span id="theme-icon"></span>
         <span id="theme-text">다크 모드</span>
     </button>
 
@@ -572,21 +747,21 @@
         </section>
 
         <!-- Shades & Tints -->
-        <div class="section-title">🎨 명도 변화 · Shades & Tints</div>
+        <div class="section-title"> 명도 변화 · Shades & Tints</div>
         <div class="shades-grid" id="shades-grid"></div>
 
         <!-- Color Harmonies -->
-        <div class="section-title">🌈 색상 조화 · Color Harmonies</div>
+        <div class="section-title"> 색상 조화 · Color Harmonies</div>
         <div class="palette-grid" id="harmony-grid"></div>
 
         <!-- Contrast Checker -->
-        <div class="section-title">♿ 접근성 대비율 · WCAG Contrast</div>
+        <div class="section-title"> 접근성 대비율 · WCAG Contrast</div>
         <section class="contrast-section">
             <div class="contrast-grid" id="contrast-grid"></div>
         </section>
 
         <!-- CSS Variables -->
-        <div class="section-title">💻 CSS 변수 코드</div>
+        <div class="section-title"> CSS 변수 코드</div>
         <section class="css-section">
             <div class="css-output">
                 <button class="copy-all-btn" id="copy-css">전체 복사</button>
@@ -606,7 +781,7 @@
         const themeText = document.getElementById('theme-text');
         const html = document.documentElement;
 
-        const savedTheme = localStorage.getItem('color-palette-theme') || 'dark';
+        const savedTheme = localStorage.getItem('color-palette-theme') || 'light';
         html.setAttribute('data-theme', savedTheme);
         updateThemeUI(savedTheme);
 
@@ -619,7 +794,7 @@
         });
 
         function updateThemeUI(theme) {
-            themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
+            themeIcon.textContent = theme === 'dark' ? '' : '';
             themeText.textContent = theme === 'dark' ? '다크 모드' : '라이트 모드';
         }
 
@@ -736,7 +911,7 @@
             const rgb = hexToRgb(hex);
             const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
             const shades = [];
-            
+
             for (let i = 0; i < count; i++) {
                 const lightness = 95 - (i * (90 / (count - 1)));
                 const newRgb = hslToRgb(hsl.h, hsl.s, lightness);
@@ -760,7 +935,7 @@
             // Generate shades
             const shades = generateShades(hex);
             const shadesGrid = document.getElementById('shades-grid');
-            shadesGrid.innerHTML = shades.map(shade => 
+            shadesGrid.innerHTML = shades.map(shade =>
                 `<div class="shade-item" style="background: ${shade}" data-hex="${shade}" onclick="copyToClipboard('${shade}')"></div>`
             ).join('');
 
@@ -801,7 +976,7 @@
                 const passAA = ratio >= 4.5;
                 const passAAA = ratio >= 7;
                 const passAALarge = ratio >= 3;
-                
+
                 return `
                     <div class="contrast-card">
                         <div class="contrast-preview" style="background: ${test.bg}; color: ${test.fg}">
@@ -811,9 +986,9 @@
                         <div class="contrast-info">
                             <div class="contrast-ratio">${ratio.toFixed(2)}:1</div>
                             <div class="contrast-badges">
-                                <span class="contrast-badge ${passAALarge ? 'pass' : 'fail'}">AA Large ${passAALarge ? '✓' : '✗'}</span>
-                                <span class="contrast-badge ${passAA ? 'pass' : 'fail'}">AA ${passAA ? '✓' : '✗'}</span>
-                                <span class="contrast-badge ${passAAA ? 'pass' : 'fail'}">AAA ${passAAA ? '✓' : '✗'}</span>
+                                <span class="contrast-badge ${passAALarge ? 'pass' : 'fail'}">AA Large ${passAALarge ? '' : ''}</span>
+                                <span class="contrast-badge ${passAA ? 'pass' : 'fail'}">AA ${passAA ? '' : ''}</span>
+                                <span class="contrast-badge ${passAAA ? 'pass' : 'fail'}">AAA ${passAAA ? '' : ''}</span>
                             </div>
                         </div>
                     </div>
@@ -883,7 +1058,7 @@
         hexInput.addEventListener('input', (e) => {
             let value = e.target.value.replace(/[^0-9A-Fa-f]/g, '').substring(0, 6);
             e.target.value = value.toUpperCase();
-            
+
             if (value.length === 6) {
                 const hex = '#' + value;
                 colorPicker.value = hex;
@@ -897,7 +1072,7 @@
                 const type = this.dataset.copy;
                 const value = document.getElementById(`${type}-value`).textContent;
                 copyToClipboard(value);
-                
+
                 this.textContent = '완료!';
                 this.classList.add('copied');
                 setTimeout(() => {
