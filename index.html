@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,99 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Noto+Sans+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-/* Header */
+        /* Dark Theme (Default) */
+        :root, [data-theme="dark"] {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a24;
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --text-primary: #e8e8e8;
+            --text-secondary: #8a8a9a;
+            --text-muted: #5a5a6a;
+            --border-color: #2a2a3a;
+            --gradient-accent: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --shadow-card: 0 10px 40px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Light Theme */
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --bg-card: #ffffff;
+            --accent-primary: #4f46e5;
+            --accent-secondary: #7c3aed;
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a5a;
+            --text-muted: #7a7a8a;
+            --border-color: #e0e0e0;
+            --gradient-accent: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            --shadow-card: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 10px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent-primary);
+            transform: scale(1.05);
+        }
+
+        /* Header */
         header {
             text-align: center;
             margin-bottom: 40px;
@@ -395,7 +487,16 @@
             .container {
                 padding: 20px 15px;
             }
-.picker-section {
+
+            .theme-toggle {
+                padding: 8px 12px;
+            }
+
+            .theme-toggle span:last-child {
+                display: none;
+            }
+
+            .picker-section {
                 padding: 20px;
             }
 
@@ -429,7 +530,7 @@
     
 
         /* Minimal light interface override */
-        :root, :root {
+        :root, [data-theme="light"] {
             --bg-primary: #f7f8f8;
             --bg-secondary: #f0f2f2;
             --bg-tertiary: #e7ebeb;
@@ -455,7 +556,33 @@
             --gradient-accent: none;
         }
 
-body {
+        [data-theme="dark"] {
+            --bg-primary: #101314;
+            --bg-secondary: #171b1d;
+            --bg-tertiary: #202628;
+            --bg-card: rgba(24, 28, 30, 0.92);
+            --bg-input: #202628;
+            --text-primary: #f2f4f4;
+            --text-secondary: #b4bdc1;
+            --text-muted: #7f8b91;
+            --accent: #72d6c9;
+            --accent-primary: #72d6c9;
+            --accent-secondary: #72d6c9;
+            --accent-light: #72d6c9;
+            --accent-glow: rgba(114, 214, 201, 0.08);
+            --success: #8bd39a;
+            --warning: #e0b85f;
+            --danger: #ffb4ab;
+            --error: #ffb4ab;
+            --border: #30383c;
+            --border-color: #30383c;
+            --border-hover: #465156;
+            --shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+            --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.28);
+            --gradient-accent: none;
+        }
+
+        body {
             background: var(--bg-primary) !important;
             color: var(--text-primary);
             line-height: 1.5;
@@ -493,7 +620,22 @@ body {
             margin-left: 0;
         }
 
-.card, .panel, .section, .input-panel, .output-panel, .preview-panel,
+        .theme-toggle, #theme-toggle, #themeToggle {
+            min-width: 64px;
+            min-height: 34px;
+            width: auto !important;
+            height: 34px !important;
+            border-radius: 8px !important;
+            padding: 0 10px !important;
+            background: var(--bg-card) !important;
+            border: 1px solid var(--border-color, var(--border)) !important;
+            color: var(--text-secondary) !important;
+            box-shadow: none !important;
+            transform: none !important;
+            font-size: 0.78rem !important;
+        }
+
+        .card, .panel, .section, .input-panel, .output-panel, .preview-panel,
         .control-panel, .controls-panel, .options-panel, .settings-panel,
         .editor-panel, .preview-section, .tool-panel, .qr-card,
         .generator-card, .scanner-card, .info-section, .stats-panel,
@@ -563,7 +705,32 @@ body {
     </style>
     <!-- Minimal sharp visual system -->
     <style id="minimal-sharp-theme">
-html, body {
+        :root, [data-theme="light"], [data-theme="dark"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-card-hover: #ffffff;
+            --bg-input: #ffffff;
+            --bg: #ffffff;
+            --panel: #ffffff;
+            --panel-strong: #ffffff;
+            --preview-bg: #ffffff;
+            --accent: #D2E0E5;
+            --accent-primary: #D2E0E5;
+            --accent-secondary: #D2E0E5;
+            --accent-light: #D2E0E5;
+            --accent-strong: #D2E0E5;
+            --accent-dim: #D2E0E5;
+            --primary: #D2E0E5;
+            --primary-color: #D2E0E5;
+            --gradient-accent: none;
+            --gradient-1: none;
+            --gradient-2: none;
+            --gradient-3: none;
+        }
+
+        html, body {
             background: #ffffff !important;
         }
 
@@ -588,7 +755,42 @@ html, body {
     </style>
     <!-- Rational project palette -->
     <style id="rational-project-palette">
-html, body {
+        :root, [data-theme="light"], [data-theme="dark"] {
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F5F6FA;
+            --bg-tertiary: #F5F6FA;
+            --bg-card: #FFFFFF;
+            --bg-card-hover: #F5F6FA;
+            --bg-input: #F0F2F7;
+            --bg: #FFFFFF;
+            --panel: #FFFFFF;
+            --panel-strong: #F5F6FA;
+            --preview-bg: #F5F6FA;
+            --text-primary: #202531;
+            --text-secondary: #697287;
+            --text-muted: #697287;
+            --border: #D9DEEA;
+            --border-color: #D9DEEA;
+            --border-hover: #6878A8;
+            --accent: #6878A8;
+            --accent-primary: #6878A8;
+            --accent-secondary: #4C5F91;
+            --accent-light: #F5F6FA;
+            --accent-strong: #4C5F91;
+            --accent-dim: #F5F6FA;
+            --primary: #6878A8;
+            --primary-color: #6878A8;
+            --success: #4C8067;
+            --warning: #9B753B;
+            --danger: #A85A5A;
+            --error: #A85A5A;
+            --gradient-accent: none;
+            --gradient-1: none;
+            --gradient-2: none;
+            --gradient-3: none;
+        }
+
+        html, body {
             background: #FFFFFF !important;
             color: #202531 !important;
         }
@@ -611,7 +813,42 @@ html, body {
     </style>
     <!-- MarkdownPreview shared visual system -->
     <style id="markdown-preview-theme">
-html, body {
+        :root, [data-theme="light"], [data-theme="dark"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f6f8fa;
+            --bg-tertiary: #f6f8fa;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f6f8fa;
+            --bg-editor: #ffffff;
+            --bg-input: #f6f8fa;
+            --bg: #ffffff;
+            --panel: #ffffff;
+            --panel-strong: #f6f8fa;
+            --preview-bg: #f6f8fa;
+            --accent: #0969da;
+            --accent-primary: #0969da;
+            --accent-secondary: #0550ae;
+            --accent-light: #f6f8fa;
+            --accent-strong: #0550ae;
+            --primary: #0969da;
+            --primary-color: #0969da;
+            --text-primary: #24292f;
+            --text-secondary: #57606a;
+            --text-muted: #8c959f;
+            --border: #d0d7de;
+            --border-color: #d0d7de;
+            --border-hover: #0969da;
+            --code-bg: #f6f8fa;
+            --blockquote-border: #0969da;
+            --link-color: #0969da;
+            --table-border: #d0d7de;
+            --table-alt-bg: #f6f8fa;
+            --gradient-accent: linear-gradient(135deg, #0969da 0%, #0550ae 100%);
+            --shadow: 0 1px 2px rgba(27, 31, 36, 0.08);
+            --shadow-card: 0 1px 2px rgba(27, 31, 36, 0.08);
+        }
+
+        html, body {
             background: #ffffff !important;
             color: #24292f !important;
         }
@@ -670,6 +907,10 @@ html, body {
     </style>
 </head>
 <body>
+    <button class="theme-toggle" id="theme-toggle">
+        <span id="theme-icon"></span>
+        <span id="theme-text">다크 모드</span>
+    </button>
 
     <div class="container">
         <header>
@@ -736,6 +977,29 @@ html, body {
     </div>
 
     <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const themeText = document.getElementById('theme-text');
+        const html = document.documentElement;
+
+        const savedTheme = localStorage.getItem('color-palette-theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeUI(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('color-palette-theme', newTheme);
+            updateThemeUI(newTheme);
+        });
+
+        function updateThemeUI(theme) {
+            themeIcon.textContent = theme === 'dark' ? '' : '';
+            themeText.textContent = theme === 'dark' ? '다크 모드' : '라이트 모드';
+        }
+
         // Color Utilities
         function hexToRgb(hex) {
             const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
